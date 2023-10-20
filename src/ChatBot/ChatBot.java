@@ -21,8 +21,19 @@ public class ChatBot {
 
 
         System.out.println("What a great name you have, " + yourName + "!");
+
+
+        System.out.println("Let me guess your age.");
+        System.out.println("Enter remainders of dividing your age by 3, 5 and 7:");
+
+        int remainder3 = scanner.nextInt();
+        int remainder5 = scanner.nextInt();
+        int remainder7 = scanner.nextInt();
+
+
+        int yourAge = (remainder3 * 70 + remainder5 * 21 + remainder7 * 15) % 105;
+
+
+        System.out.println("Your age is " + yourAge + "; that's a good time to start programming!");
     }
 }
-
-
-
