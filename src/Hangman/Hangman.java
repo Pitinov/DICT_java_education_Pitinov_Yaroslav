@@ -4,10 +4,26 @@ import java.util.Random;
 public class Hangman {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        System.out.println("HANGMAN");
+        String command;
+        do {
+            System.out.println("Type \"play\" to play the game, \"exit\" to quit: ");
+            command = scanner.nextLine().trim().toLowerCase();
+
+            if ("play".equals(command)) {
+                playGame(scanner);
+            } else if (!"exit".equals(command)) {
+                System.out.println("Invalid command. Please type \"play\" to play or \"exit\" to quit.");
+            }
+        } while (!"exit".equals(command));
+    }
+
+    public static void playGame(Scanner scanner) {
         Random random = new Random();
 
         String[] words = {"python", "java", "javascript", "kotlin"};
-        String secretWord = words[random.nextInt(words.length)]; // Випадковий вибір слова зі списку
+        String secretWord = words[random.nextInt(words.length)];
         StringBuilder guessedWord = new StringBuilder(secretWord.length());
 
         for (int i = 0; i < secretWord.length(); i++) {
@@ -17,12 +33,10 @@ public class Hangman {
         int remainingAttempts = 8;
         StringBuilder usedLetters = new StringBuilder();
 
-        System.out.println("HANGMAN");
-        System.out.println(guessedWord);
-
+        System.out.println("----------");
         while (remainingAttempts > 0) {
             System.out.print("Input a letter: > ");
-            String input = scanner.next();
+            String input = scanner.next().toLowerCase();
 
             if (input.length() != 1) {
                 System.out.println("You should input a single letter");
