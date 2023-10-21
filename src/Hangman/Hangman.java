@@ -22,10 +22,17 @@ public class Hangman {
 
         while (remainingAttempts > 0) {
             System.out.print("Input a letter: > ");
-            char inputLetter = scanner.next().charAt(0);
+            String input = scanner.next();
+
+            if (input.length() != 1) {
+                System.out.println("You should input a single letter");
+                continue;
+            }
+
+            char inputLetter = input.charAt(0);
 
             if (usedLetters.indexOf(String.valueOf(inputLetter)) != -1) {
-                System.out.println("No improvements");
+                System.out.println("You've already guessed this letter");
             } else if (secretWord.indexOf(inputLetter) != -1) {
                 for (int i = 0; i < secretWord.length(); i++) {
                     if (secretWord.charAt(i) == inputLetter) {
