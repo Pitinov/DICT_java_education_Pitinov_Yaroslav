@@ -15,6 +15,7 @@ public class Hangman {
         }
 
         int remainingAttempts = 8;
+        StringBuilder usedLetters = new StringBuilder();
 
         System.out.println("HANGMAN");
         System.out.println(guessedWord);
@@ -22,25 +23,26 @@ public class Hangman {
         while (remainingAttempts > 0) {
             System.out.print("Input a letter: > ");
             char inputLetter = scanner.next().charAt(0);
-            boolean letterFound = false;
 
-            for (int i = 0; i < secretWord.length(); i++) {
-                if (secretWord.charAt(i) == inputLetter && guessedWord.charAt(i) == '-') {
-                    guessedWord.setCharAt(i, inputLetter);
-                    letterFound = true;
+            if (usedLetters.indexOf(String.valueOf(inputLetter)) != -1) {
+                System.out.println("No improvements");
+            } else if (secretWord.indexOf(inputLetter) != -1) {
+                for (int i = 0; i < secretWord.length(); i++) {
+                    if (secretWord.charAt(i) == inputLetter) {
+                        guessedWord.setCharAt(i, inputLetter);
+                    }
                 }
-            }
-
-            if (letterFound) {
                 System.out.println(guessedWord);
             } else {
                 System.out.println("That letter doesn't appear in the word");
                 remainingAttempts--;
             }
 
+            usedLetters.append(inputLetter);
+
             if (guessedWord.toString().equals(secretWord)) {
-                System.out.println("Thanks for playing!");
-                System.out.println("We'll see how well you did in the next stage");
+                System.out.println("You guessed the word!");
+                System.out.println("You survived!");
                 break;
             }
         }
