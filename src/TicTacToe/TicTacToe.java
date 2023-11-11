@@ -15,6 +15,7 @@ public class TicTacToe {
         }
 
         displayGameBoard(input);
+        analyzeGameState(input);
     }
 
     private static boolean isValidInput(String input) {
@@ -32,6 +33,47 @@ public class TicTacToe {
             System.out.println("|");
         }
         System.out.println("---------");
+    }
+
+    private static void analyzeGameState(String cells) {
+        boolean xWins = checkWin(cells, 'X');
+        boolean oWins = checkWin(cells, 'O');
+        boolean hasEmptyCells = cells.contains("_");
+
+        if (Math.abs(countSymbol(cells, 'X') - countSymbol(cells, 'O')) >= 2) {
+            System.out.println("Impossible");
+        } else if (xWins && oWins || xWins && countSymbol(cells, 'X') > countSymbol(cells, 'O')) {
+            System.out.println("Impossible");
+        } else if (xWins) {
+            System.out.println("X wins");
+        } else if (oWins) {
+            System.out.println("O wins");
+        } else if (hasEmptyCells) {
+            System.out.println("Game not finished");
+        } else {
+            System.out.println("Draw");
+        }
+    }
+
+    private static boolean checkWin(String cells, char symbol) {
+        for (int i = 0; i < 3; i++) {
+            if (cells.charAt(i * 3) == symbol && cells.charAt(i * 3 + 1) == symbol && cells.charAt(i * 3 + 2) == symbol) {
+                return true;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (cells.charAt(i) == symbol && cells.charAt(i + 3) == symbol && cells.charAt(i + 6) == symbol) {
+                return true;
+            }
+        }
+
+        return cells.charAt(0) == symbol && cells.charAt(4) == symbol && cells.charAt(8) == symbol ||
+                cells.charAt(2) == symbol && cells.charAt(4) == symbol && cells.charAt(6) == symbol;
+    }
+
+    private static int countSymbol(String cells, char symbol) {
+        return (int) cells.chars().filter(c -> c == symbol).count();
     }
 }
 
