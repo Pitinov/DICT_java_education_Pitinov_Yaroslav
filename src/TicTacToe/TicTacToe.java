@@ -6,30 +6,25 @@ public class TicTacToe {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter cells: ");
-        String input = scanner.nextLine();
-
-        if (!isValidInput(input)) {
-            System.out.println("Invalid input. Please enter a string of 9 characters containing only X, O, and _.");
-            return;
-        }
-
-        char[][] gameBoard = initializeGameBoard(input);
+        char[][] gameBoard = createEmptyGameBoard();
 
         displayGameBoard(gameBoard);
 
+        char currentPlayer = 'X';
+
         while (true) {
             System.out.print("Enter the coordinates: ");
+
             try {
                 int row = scanner.nextInt();
                 int col = scanner.nextInt();
 
                 if (isValidMove(gameBoard, row, col)) {
-                    makeMove(gameBoard, row, col, 'X');
+                    makeMove(gameBoard, row, col, currentPlayer);
                     displayGameBoard(gameBoard);
 
-                    if (checkGameResult(gameBoard, 'X')) {
-                        System.out.println("X wins");
+                    if (checkGameResult(gameBoard, currentPlayer)) {
+                        System.out.println(currentPlayer + " wins");
                         break;
                     }
 
@@ -38,19 +33,7 @@ public class TicTacToe {
                         break;
                     }
 
-                    // Opponent's move (for simplicity, always 'O')
-                    makeOpponentMove(gameBoard);
-                    displayGameBoard(gameBoard);
-
-                    if (checkGameResult(gameBoard, 'O')) {
-                        System.out.println("O wins");
-                        break;
-                    }
-
-                    if (isBoardFull(gameBoard)) {
-                        System.out.println("Draw");
-                        break;
-                    }
+                    currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
                 } else {
                     System.out.println("This cell is occupied! Choose another one!");
                 }
@@ -61,17 +44,12 @@ public class TicTacToe {
         }
     }
 
-    private static boolean isValidInput(String input) {
-        return input.matches("[XO_]{9}");
-    }
-
-    private static char[][] initializeGameBoard(String input) {
+    private static char[][] createEmptyGameBoard() {
         char[][] gameBoard = new char[3][3];
-        int index = 0;
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                gameBoard[i][j] = input.charAt(index++);
+                gameBoard[i][j] = ' ';
             }
         }
 
@@ -91,23 +69,11 @@ public class TicTacToe {
     }
 
     private static boolean isValidMove(char[][] gameBoard, int row, int col) {
-        return row >= 1 && row <= 3 && col >= 1 && col <= 3 && gameBoard[3 - col][row - 1] == '_';
+        return row >= 1 && row <= 3 && col >= 1 && col <= 3 && gameBoard[row - 1][col - 1] == ' ';
     }
 
     private static void makeMove(char[][] gameBoard, int row, int col, char symbol) {
-        gameBoard[3 - col][row - 1] = symbol;
-    }
-
-    private static void makeOpponentMove(char[][] gameBoard) {
-        // For simplicity, opponent always places 'O' in the first available empty cell
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (gameBoard[i][j] == '_') {
-                    gameBoard[i][j] = 'O';
-                    return;
-                }
-            }
-        }
+        gameBoard[row - 1][col - 1] = symbol;
     }
 
     private static boolean checkGameResult(char[][] gameBoard, char symbol) {
@@ -125,7 +91,7 @@ public class TicTacToe {
     private static boolean isBoardFull(char[][] gameBoard) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (gameBoard[i][j] == '_') {
+                if (gameBoard[i][j] == ' ') {
                     return false;
                 }
             }
