@@ -11,41 +11,47 @@ public class CoffeeMachine {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        String action;
 
-        printMachineStatus();
+        do {
+            System.out.println("Write action (buy, fill, take, remaining, exit):");
+            action = scanner.next();
 
-        System.out.println("Write action (buy, fill, take):");
-        String action = scanner.next();
-
-        switch (action) {
-            case "buy":
-                buyCoffee(scanner);
-                break;
-            case "fill":
-                fillMachine(scanner);
-                break;
-            case "take":
-                takeMoney();
-                break;
-        }
-
-        printMachineStatus();
+            switch (action) {
+                case "buy":
+                    buyCoffee(scanner);
+                    break;
+                case "fill":
+                    fillMachine(scanner);
+                    break;
+                case "take":
+                    takeMoney();
+                    break;
+                case "remaining":
+                    printMachineStatus();
+                    break;
+            }
+        } while (!action.equals("exit"));
     }
 
     private static void buyCoffee(Scanner scanner) {
-        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:");
-        int coffeeType = scanner.nextInt();
+        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back – to main menu:");
+        String coffeeType = scanner.next();
 
         switch (coffeeType) {
-            case 1:
+            case "1":
                 makeCoffee(250, 0, 16, 4);
                 break;
-            case 2:
+            case "2":
                 makeCoffee(350, 75, 20, 7);
                 break;
-            case 3:
+            case "3":
                 makeCoffee(200, 100, 12, 6);
                 break;
+            case "back":
+                break;
+            default:
+                System.out.println("Invalid option!");
         }
     }
 
@@ -63,16 +69,16 @@ public class CoffeeMachine {
     }
 
     private static void fillMachine(Scanner scanner) {
-        System.out.println("Write how many ml of water you want to add:");
+        System.out.println("Write how many ml of water do you want to add:");
         int waterToAdd = scanner.nextInt();
 
-        System.out.println("Write how many ml of milk you want to add:");
+        System.out.println("Write how many ml of milk do you want to add:");
         int milkToAdd = scanner.nextInt();
 
-        System.out.println("Write how many grams of coffee beans you want to add:");
+        System.out.println("Write how many grams of coffee beans do you want to add:");
         int coffeeBeansToAdd = scanner.nextInt();
 
-        System.out.println("Write how many disposable coffee cups you want to add:");
+        System.out.println("Write how many disposable cups of coffee do you want to add:");
         int cupsToAdd = scanner.nextInt();
 
         water += waterToAdd;
