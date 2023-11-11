@@ -14,66 +14,124 @@ public class TicTacToe {
             return;
         }
 
-        displayGameBoard(input);
-        analyzeGameState(input);
+        char[][] gameBoard = initializeGameBoard(input);
+
+        displayGameBoard(gameBoard);
+
+        while (true) {
+            System.out.print("Enter the coordinates: ");
+            try {
+                int row = scanner.nextInt();
+                int col = scanner.nextInt();
+
+                if (isValidMove(gameBoard, row, col)) {
+                    makeMove(gameBoard, row, col, 'X');
+                    displayGameBoard(gameBoard);
+
+                    if (checkGameResult(gameBoard, 'X')) {
+                        System.out.println("X wins");
+                        break;
+                    }
+
+                    if (isBoardFull(gameBoard)) {
+                        System.out.println("Draw");
+                        break;
+                    }
+
+                    // Opponent's move (for simplicity, always 'O')
+                    makeOpponentMove(gameBoard);
+                    displayGameBoard(gameBoard);
+
+                    if (checkGameResult(gameBoard, 'O')) {
+                        System.out.println("O wins");
+                        break;
+                    }
+
+                    if (isBoardFull(gameBoard)) {
+                        System.out.println("Draw");
+                        break;
+                    }
+                } else {
+                    System.out.println("This cell is occupied! Choose another one!");
+                }
+            } catch (Exception e) {
+                System.out.println("You should enter numbers!");
+                scanner.nextLine(); // consume the invalid input
+            }
+        }
     }
 
     private static boolean isValidInput(String input) {
         return input.matches("[XO_]{9}");
     }
 
-    private static void displayGameBoard(String cells) {
+    private static char[][] initializeGameBoard(String input) {
+        char[][] gameBoard = new char[3][3];
+        int index = 0;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                gameBoard[i][j] = input.charAt(index++);
+            }
+        }
+
+        return gameBoard;
+    }
+
+    private static void displayGameBoard(char[][] gameBoard) {
         System.out.println("---------");
         for (int i = 0; i < 3; i++) {
             System.out.print("| ");
             for (int j = 0; j < 3; j++) {
-                char symbol = cells.charAt(i * 3 + j);
-                System.out.print(symbol + " ");
+                System.out.print(gameBoard[i][j] + " ");
             }
             System.out.println("|");
         }
         System.out.println("---------");
     }
 
-    private static void analyzeGameState(String cells) {
-        boolean xWins = checkWin(cells, 'X');
-        boolean oWins = checkWin(cells, 'O');
-        boolean hasEmptyCells = cells.contains("_");
+    private static boolean isValidMove(char[][] gameBoard, int row, int col) {
+        return row >= 1 && row <= 3 && col >= 1 && col <= 3 && gameBoard[3 - col][row - 1] == '_';
+    }
 
-        if (Math.abs(countSymbol(cells, 'X') - countSymbol(cells, 'O')) >= 2) {
-            System.out.println("Impossible");
-        } else if (xWins && oWins || xWins && countSymbol(cells, 'X') > countSymbol(cells, 'O')) {
-            System.out.println("Impossible");
-        } else if (xWins) {
-            System.out.println("X wins");
-        } else if (oWins) {
-            System.out.println("O wins");
-        } else if (hasEmptyCells) {
-            System.out.println("Game not finished");
-        } else {
-            System.out.println("Draw");
+    private static void makeMove(char[][] gameBoard, int row, int col, char symbol) {
+        gameBoard[3 - col][row - 1] = symbol;
+    }
+
+    private static void makeOpponentMove(char[][] gameBoard) {
+        // For simplicity, opponent always places 'O' in the first available empty cell
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (gameBoard[i][j] == '_') {
+                    gameBoard[i][j] = 'O';
+                    return;
+                }
+            }
         }
     }
 
-    private static boolean checkWin(String cells, char symbol) {
+    private static boolean checkGameResult(char[][] gameBoard, char symbol) {
         for (int i = 0; i < 3; i++) {
-            if (cells.charAt(i * 3) == symbol && cells.charAt(i * 3 + 1) == symbol && cells.charAt(i * 3 + 2) == symbol) {
+            if (gameBoard[i][0] == symbol && gameBoard[i][1] == symbol && gameBoard[i][2] == symbol ||
+                    gameBoard[0][i] == symbol && gameBoard[1][i] == symbol && gameBoard[2][i] == symbol) {
                 return true;
             }
         }
 
-        for (int i = 0; i < 3; i++) {
-            if (cells.charAt(i) == symbol && cells.charAt(i + 3) == symbol && cells.charAt(i + 6) == symbol) {
-                return true;
-            }
-        }
-
-        return cells.charAt(0) == symbol && cells.charAt(4) == symbol && cells.charAt(8) == symbol ||
-                cells.charAt(2) == symbol && cells.charAt(4) == symbol && cells.charAt(6) == symbol;
+        return gameBoard[0][0] == symbol && gameBoard[1][1] == symbol && gameBoard[2][2] == symbol ||
+                gameBoard[0][2] == symbol && gameBoard[1][1] == symbol && gameBoard[2][0] == symbol;
     }
 
-    private static int countSymbol(String cells, char symbol) {
-        return (int) cells.chars().filter(c -> c == symbol).count();
+    private static boolean isBoardFull(char[][] gameBoard) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (gameBoard[i][j] == '_') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
+
 
