@@ -8,6 +8,7 @@ public class MatrixProcessing {
             System.out.println("1. Add matrices");
             System.out.println("2. Multiply matrix by a constant");
             System.out.println("3. Multiply matrices");
+            System.out.println("4. Transpose matrix");
             System.out.println("0. Exit");
 
             System.out.print("Your choice: > ");
@@ -24,6 +25,9 @@ public class MatrixProcessing {
                 case 3:
                     multiplyMatrices(scanner);
                     break;
+                case 4:
+                    transposeMatrix(scanner);
+                    break;
                 case 0:
                     System.exit(0);
                     break;
@@ -32,6 +36,65 @@ public class MatrixProcessing {
                     break;
             }
         }
+    }
+
+    private static void transposeMatrix(Scanner scanner) {
+        System.out.println("1. Main diagonal");
+        System.out.println("2. Side diagonal");
+        System.out.println("3. Vertical line");
+        System.out.println("4. Horizontal line");
+
+        System.out.print("Your choice: > ");
+        int transposeOption = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Enter matrix size: > ");
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+        scanner.nextLine();
+        int[][] matrix = readMatrix(scanner, n, m);
+
+        int[][] transposedMatrix = transpose(matrix, transposeOption);
+        printMatrix(transposedMatrix);
+    }
+
+    private static int[][] transpose(int[][] matrix, int option) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int[][] transposedMatrix = new int[rows][cols];
+
+        switch (option) {
+            case 1: // Main diagonal
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        transposedMatrix[i][j] = matrix[j][i];
+                    }
+                }
+                break;
+            case 2: // Side diagonal
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        transposedMatrix[i][j] = matrix[cols - 1 - j][rows - 1 - i];
+                    }
+                }
+                break;
+            case 3: // Vertical line
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        transposedMatrix[i][j] = matrix[i][cols - 1 - j];
+                    }
+                }
+                break;
+            case 4: // Horizontal line
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        transposedMatrix[i][j] = matrix[rows - 1 - i][j];
+                    }
+                }
+                break;
+        }
+
+        return transposedMatrix;
     }
 
     private static void addMatrices(Scanner scanner) {
