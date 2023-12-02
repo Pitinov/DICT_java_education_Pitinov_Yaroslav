@@ -5,20 +5,13 @@ import java.util.Scanner;
 public class MatrixProcessing {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int nA = scanner.nextInt();
-        int mA = scanner.nextInt();
-        int[][] matrixA = readMatrix(scanner, nA, mA);
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+        int[][] matrix = readMatrix(scanner, n, m);
+        int constant = scanner.nextInt();
 
-        int nB = scanner.nextInt();
-        int mB = scanner.nextInt();
-        int[][] matrixB = readMatrix(scanner, nB, mB);
-
-        if (nA == nB && mA == mB) {
-            int[][] sumMatrix = addMatrices(matrixA, matrixB);
-            printMatrix(sumMatrix);
-        } else {
-            System.out.println("ERROR");
-        }
+        multiplyMatrixByConstant(matrix, constant);
+        printMatrix(matrix);
     }
 
     private static int[][] readMatrix(Scanner scanner, int rows, int cols) {
@@ -31,16 +24,14 @@ public class MatrixProcessing {
         return matrix;
     }
 
-    private static int[][] addMatrices(int[][] matrixA, int[][] matrixB) {
-        int rows = matrixA.length;
-        int cols = matrixA[0].length;
-        int[][] sumMatrix = new int[rows][cols];
+    private static void multiplyMatrixByConstant(int[][] matrix, int constant) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                sumMatrix[i][j] = matrixA[i][j] + matrixB[i][j];
+                matrix[i][j] *= constant;
             }
         }
-        return sumMatrix;
     }
 
     private static void printMatrix(int[][] matrix) {
