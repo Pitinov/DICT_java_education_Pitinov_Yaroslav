@@ -4,73 +4,86 @@ import java.util.Scanner;
 
 public class CreditCalculator {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        String type = System.getProperty("type");
+        if (type == null || (!type.equals("annuity") && !type.equals("diff"))) {
+            System.out.println("Incorrect parameters");
+            return;
+        }
 
-        System.out.println("What do you want to calculate?");
-        System.out.println("Type \"n\" for the number of monthly payments,");
-        System.out.println("Type \"a\" for annuity monthly payment amount,");
-        System.out.println("Type \"p\" for loan principal:");
-
-        char calculationType = scanner.next().charAt(0);
-
-        switch (calculationType) {
-            case 'n':
-                calculateNumberOfPayments(scanner);
-                break;
-            case 'a':
-                calculateAnnuityPayment(scanner);
-                break;
-            case 'p':
-                calculateLoanPrincipal(scanner);
-                break;
-            default:
-                System.out.println("Invalid input. Please choose 'n', 'a', or 'p'.");
+        if (type.equals("diff")) {
+            calculateDifferentialPayments(args);
+        } else if (type.equals("annuity")) {
+            calculateAnnuityPayments(args);
         }
     }
 
-    private static void calculateNumberOfPayments(Scanner scanner) {
-        System.out.print("Enter the loan principal: ");
-        double principal = scanner.nextDouble();
-        System.out.print("Enter the monthly payment: ");
-        double monthlyPayment = scanner.nextDouble();
-        System.out.print("Enter the loan interest: ");
-        double interestRate = scanner.nextDouble();
+    private static void calculateDifferentialPayments(String[] args) {
+        if (args.length < 4) {
+            System.out.println("Incorrect parameters");
+            return;
+        }
+
+        double principal = Double.parseDouble(args[1]);
+        int periods = Integer.parseInt(args[2]);
+        double interestRate = Double.parseDouble(args[3]);
 
         double i = interestRate / 100 / 12;
-        double n = Math.log(monthlyPayment / (monthlyPayment - i * principal)) / Math.log(1 + i);
-        int numberOfMonths = (int) Math.ceil(n);
+        double totalPayments = 0;
 
-        int years = numberOfMonths / 12;
-        int months = numberOfMonths % 12;
+        for (int month = 1; month <= periods; month++) {
+            double payment = (principal / periods) + i * (principal - (principal * (month - 1)) / periods);
+            int roundedPayment = (int) Math.ceil(payment);
+            System.out.println("Month " + month + ": payment is " + roundedPayment);
+            totalPayments += roundedPayment;
+        }
 
-        System.out.println("It will take " + years + " years and " + months + " months to repay this loan!");
+        int overpayment = (int) totalPayments - (int) principal;
+        System.out.println("Overpayment = " + overpayment);
     }
 
-    private static void calculateAnnuityPayment(Scanner scanner) {
-        System.out.print("Enter the loan principal: ");
-        double principal = scanner.nextDouble();
-        System.out.print("Enter the number of periods: ");
-        int numberOfPeriods = scanner.nextInt();
-        System.out.print("Enter the loan interest: ");
-        double interestRate = scanner.nextDouble();
+    private static void calculateAnnuityPayments(String[] args) {
+        if (args.length < 4) {
+            System.out.println("Incorrect parameters");
+            return;
+        }
+
+        double principal = Double.parseDouble(args[1]);
+        int periods = Integer.parseInt(args[2]);
+        double interestRate = Double.parseDouble(args[3]);
 
         double i = interestRate / 100 / 12;
-        double monthlyPayment = principal * (i * Math.pow(1 + i, numberOfPeriods)) / (Math.pow(1 + i, numberOfPeriods) - 1);
+        double annuityPayment = principal * (i * Math.pow(1 + i, periods)) / (Math.pow(1 + i, periods) - 1);
+        int roundedPayment = (int) Math.ceil(annuityPayment);
 
-        System.out.println("Your monthly payment = " + (int) Math.ceil(monthlyPayment) + "!");
-    }
+        if (args.length == 5 && args[4].equals("--payment")) {
+            System.out.println("Incorrect parameters");
+            return;
+        }
 
-    private static void calculateLoanPrincipal(Scanner scanner) {
-        System.out.print("Enter the annuity payment: ");
-        double annuityPayment = scanner.nextDouble();
-        System.out.print("Enter the number of periods: ");
-        int numberOfPeriods = scanner.nextInt();
-        System.out.print("Enter the loan interest: ");
-        double interestRate = scanner.nextDouble();
+        if (args.length == 6 && args[4].equals("--payment")) {
+            int annuityPaymentArg = Integer.parseInt(args[5]);
+            if (annuityPaymentArg != roundedPayment) {
+                System.out.println("Incorrect parameters");
+                return;
+            }
+        }
 
-        double i = interestRate / 100 / 12;
-        double loanPrincipal = annuityPayment * ((Math.pow(1 + i, numberOfPeriods) - 1) / (i * Math.pow(1 + i, numberOfPeriods)));
+        if (args.length == 6 && args[4].equals("--periods")) {
+            int periodsArg = Integer.parseInt(args[5]);
+            if (periodsArg != periods) {
+                System.out.println("Incorrect parameters");
+                return;
+            }
+        }
 
-        System.out.println("Your loan principal = " + (int) Math.ceil(loanPrincipal) + "!");
+        if (args.length == 6 && args[4].equals("--principal")) {
+            double principalArg = Double.parseDouble(args[5]);
+            if (principalArg != principal) {
+                System.out.println("Incorrect parameters");
+                return;
+            }
+        }
+
+        System.out.println("Your annuity payment = " + roundedPayment + "!");
     }
 }
